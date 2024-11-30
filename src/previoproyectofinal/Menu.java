@@ -20,8 +20,25 @@ public class Menu {
             System.out.println("6. Modificar precio de producto");
             System.out.println("7. Salir");
             System.out.print("Seleccione una opción: ");
-            int opcion = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer
+
+            int opcion = 0;
+            boolean opcionValida = false;
+
+            // Validar que la opción ingresada sea un número entre 1 y 7
+            while (!opcionValida) {
+                if (scanner.hasNextInt()) {
+                    opcion = scanner.nextInt();
+                    if (opcion >= 1 && opcion <= 7) {
+                        opcionValida = true;
+                    } else {
+                        System.out.println("Opción inválida. Intente nuevamente.");
+                    }
+                } else {
+                    System.out.println("Entrada no válida. Por favor ingrese un número del 1 al 7.");
+                    scanner.next(); // Limpiar el buffer del scanner
+                }
+                scanner.nextLine(); // Limpiar el buffer
+            }
 
             switch (opcion) {
                 case 1:
@@ -29,7 +46,12 @@ public class Menu {
                     System.out.print("Ingrese el nombre del cliente: ");
                     String nombre = scanner.nextLine();
                     System.out.print("Ingrese los años que el cliente ha estado con la empresa: ");
+                    while (!scanner.hasNextInt()) {
+                        System.out.println("Entrada no válida. Por favor ingrese un número.");
+                        scanner.next(); // Limpiar el buffer
+                    }
                     int aniosCliente = scanner.nextInt();
+                    scanner.nextLine(); // Limpiar el buffer
                     cliente = new Cliente(nombre, aniosCliente);
                     System.out.println("Cliente creado exitosamente.");
                     break;
@@ -53,12 +75,21 @@ public class Menu {
                             System.out.print("Ingrese el nombre del producto: ");
                             String nombreProducto = scanner.nextLine();
                             System.out.print("Ingrese el precio unitario del producto: ");
+                            while (!scanner.hasNextDouble()) {
+                                System.out.println("Entrada no válida. Por favor ingrese un número.");
+                                scanner.next(); // Limpiar el buffer
+                            }
                             double precioUnitario = scanner.nextDouble();
                             scanner.nextLine(); // Limpiar el buffer
                             System.out.print("Ingrese el tipo de cantidad (horas, días, jornadas, etc.): ");
                             String tipoCantidad = scanner.nextLine();
                             System.out.print("Ingrese la cantidad: ");
+                            while (!scanner.hasNextInt()) {
+                                System.out.println("Entrada no válida. Por favor ingrese un número.");
+                                scanner.next(); // Limpiar el buffer
+                            }
                             int cantidad = scanner.nextInt();
+                            scanner.nextLine(); // Limpiar el buffer
 
                             Producto producto = new Producto(nombreProducto, precioUnitario, tipoCantidad);
                             cotizacion.agregarProducto(producto, cantidad);
@@ -69,14 +100,21 @@ public class Menu {
                             for (int i = 0; i < cotizacion.numProductos; i++) {
                                 Producto p = cotizacion.productos[i];
                                 int c = cotizacion.cantidades[i];
-                                System.out.printf("%d. Producto: %s | Tipo de Cantidad: %s | Cantidad: %s | Precio Unitario: S/%.2f%n",
+                                System.out.printf("%d. Producto: %s | Tipo de Cantidad: %s | Cantidad: %d | Precio Unitario: S/%.2f%n",
                                         i, p.getNombre(), p.getTipoCantidad(), c, p.getPrecioUnitario());
                             }
 
                             // Preguntar si desea agregar otro producto
-                            System.out.print("¿Desea agregar otro producto? (s/n): ");
-                            char respuesta = scanner.next().toLowerCase().charAt(0);
-                            scanner.nextLine(); // Limpiar el buffer
+                            char respuesta;
+                            do {
+                                System.out.print("¿Desea agregar otro producto? (s/n): ");
+                                respuesta = scanner.next().toLowerCase().charAt(0);
+                                scanner.nextLine(); // Limpiar el buffer
+                                if (respuesta != 's' && respuesta != 'n') {
+                                    System.out.println("Respuesta inválida. Intente nuevamente.");
+                                }
+                            } while (respuesta != 's' && respuesta != 'n');
+
                             if (respuesta != 's') {
                                 seguirAgregando = false;
                             }
@@ -88,10 +126,27 @@ public class Menu {
                     if (cotizacion == null) {
                         System.out.println("Primero debe crear una cotización.");
                     } else {
-                        System.out.print("Ingrese el índice del producto que desea modificar (0 a " + (cotizacion.numProductos - 1) + "): ");
-                        int indice = scanner.nextInt();
+                        int indice;
+                        do {
+                            System.out.print("Ingrese el índice del producto que desea modificar (0 a " + (cotizacion.numProductos - 1) + "): ");
+                            while (!scanner.hasNextInt()) {
+                                System.out.println("Entrada no válida. Por favor ingrese un número.");
+                                scanner.next(); // Limpiar el buffer
+                            }
+                            indice = scanner.nextInt();
+                            scanner.nextLine(); // Limpiar el buffer
+                            if (indice < 0 || indice >= cotizacion.numProductos) {
+                                System.out.println("Índice inválido. Intente nuevamente.");
+                            }
+                        } while (indice < 0 || indice >= cotizacion.numProductos);
+
                         System.out.print("Ingrese la nueva cantidad: ");
+                        while (!scanner.hasNextInt()) {
+                            System.out.println("Entrada no válida. Por favor ingrese un número.");
+                            scanner.next(); // Limpiar el buffer
+                        }
                         int nuevaCantidad = scanner.nextInt();
+                        scanner.nextLine(); // Limpiar el buffer
 
                         cotizacion.modificarCantidad(indice, nuevaCantidad);
                     }
@@ -109,17 +164,29 @@ public class Menu {
                     if (cotizacion == null) {
                         System.out.println("Primero debe crear una cotización.");
                     } else {
-                        System.out.print("Ingrese el índice del producto que desea modificar (0 a " + (cotizacion.numProductos - 1) + "): ");
-                        int indice = scanner.nextInt();
+                        int indice;
+                        do {
+                            System.out.print("Ingrese el índice del producto que desea modificar (0 a " + (cotizacion.numProductos - 1) + "): ");
+                            while (!scanner.hasNextInt()) {
+                                System.out.println("Entrada no válida. Por favor ingrese un número.");
+                                scanner.next(); // Limpiar el buffer
+                            }
+                            indice = scanner.nextInt();
+                            scanner.nextLine(); // Limpiar el buffer
+                            if (indice < 0 || indice >= cotizacion.numProductos) {
+                                System.out.println("Índice inválido. Intente nuevamente.");
+                            }
+                        } while (indice < 0 || indice >= cotizacion.numProductos);
                         System.out.print("Ingrese el nuevo precio unitario: ");
-                        double nuevoPrecio = scanner.nextDouble();
-
-                        if (indice >= 0 && indice < cotizacion.numProductos) {
-                            cotizacion.productos[indice].modificarPrecio(nuevoPrecio);
-                            System.out.println("Precio del producto modificado exitosamente.");
-                        } else {
-                            System.out.println("Índice inválido.");
+                        while (!scanner.hasNextDouble()) {
+                            System.out.println("Entrada no válida. Por favor ingrese un número.");
+                            scanner.next(); // Limpiar el buffer
                         }
+                        double nuevoPrecio = scanner.nextDouble();
+                        scanner.nextLine(); // Limpiar el buffer
+
+                        cotizacion.productos[indice].modificarPrecio(nuevoPrecio);
+                        System.out.println("Precio del producto modificado exitosamente.");
                     }
                     break;
                 case 7:

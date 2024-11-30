@@ -40,6 +40,7 @@ public class Cotizacion {
     public void modificarCantidad(int indice, int nuevaCantidad) {
         if (indice >= 0 && indice < numProductos) {
             cantidades[indice] = nuevaCantidad;
+            System.out.println("Cantidad modificada exitosamente.");
         } else {
             System.out.println("Índice inválido.");
         }
